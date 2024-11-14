@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import { Todo } from "./components/Todo/Todo";
 import Button from "./components/Todo/Button/Button";
 import { useTodoList, useTodoDispatch } from "./contexts/TodoContext";
+import { setLocalStorage } from "./utils/localStorage.util";
 
 function App() {
   const todoList = useTodoList();
@@ -11,10 +12,14 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<number>(0);
 
+  const editRef = useRef<HTMLInputElement>(null);
   const totalCompleted = todoList.filter((todo) => todo.isCompleted).length;
+
+  setLocalStorage("todoList", todoList);
 
   function activateEditing(id: number, item: string) {
     setIsEditing(true);
+    editRef.current?.focus();
     setEditingId(id);
     setItem(item);
   }
@@ -51,6 +56,7 @@ function App() {
               }}
               type="text"
               name="item"
+              ref={editRef}
               value={item}
               onChange={(e) => setItem(e.target.value)}
               placeholder="Enter todo item"
@@ -91,6 +97,7 @@ function App() {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "center",
                 padding: "10px",
               }}
             >

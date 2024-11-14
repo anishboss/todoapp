@@ -8,27 +8,21 @@ export interface ITodoProps {
 
 export const Todo: React.FC<ITodoProps> = ({ todoList, activateEditing }) => {
   return (
-    <>
-      <ul
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1px",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "10px",
-          textDecoration: "none",
-          listStyle: "none",
-        }}
-      >
-        {todoList.map((todo: ITodoItem) => (
-          <TodoItem
-            todo={todo}
-            activateEditing={activateEditing}
-            key={todo.id}
-          />
-        ))}
-      </ul>
-    </>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "1px",
+        margin: "10px",
+        textDecoration: "none",
+        listStyle: "none",
+      }}
+    >
+      {todoList.map((todo: ITodoItem) => (
+        <TodoItem todo={todo} activateEditing={activateEditing} key={todo.id} />
+      ))}
+    </div>
   );
 };

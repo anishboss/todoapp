@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useReducer } from "react";
 import generateRandomNumber from "../utils/generateRandomNumber";
+import { getLocalStorage } from "../utils/localStorage.util";
 
 export interface ITodoItem {
   id: number;
@@ -13,8 +14,8 @@ type TodoAction =
   | { type: "remove"; payload: { id: number } }
   | { type: "toogleComplete"; payload: { id: number } }
   | { type: "clearAll" };
-
-const initialTodoList: ITodoItem[] = [];
+const localTodoList: ITodoItem[] = getLocalStorage("todoList");
+const initialTodoList: ITodoItem[] = localTodoList || [];
 
 export const TodoContext = createContext<ITodoItem[]>([]);
 export const TodoDispatchContext = createContext<React.Dispatch<TodoAction>>(
@@ -50,12 +51,12 @@ export function todoReducer(
   switch (action.type) {
     case "added": {
       return [
-        ...todoList,
         {
           id: generateRandomNumber(),
           item: action.payload?.item,
           isCompleted: false,
         },
+        ...todoList,
       ];
     }
     case "updateTodo": {

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface IButtonProps {
-  children: any;
-  styleType: any;
-  onClickfunc: any;
+  children: ReactNode;
+  styleType: object;
+  onClickfunc: () => void;
 }
 
 const Button: React.FC<IButtonProps> = ({
