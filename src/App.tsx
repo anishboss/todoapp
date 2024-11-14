@@ -2,41 +2,16 @@ import { useState } from "react";
 import "./App.css";
 import { Todo } from "./components/Todo/Todo";
 import Button from "./components/Todo/Button/Button";
-import generateRandomNumber from "./utils/generateRandomNumber";
+import { useTodoList, useTodoDispatch } from "./contexts/TodoContext";
 
 function App() {
-  const [todoList, setTodoList] = useState([
-    {
-      id: 1,
-      item: "Wake Up",
-      isCompleted: true,
-    },
-    {
-      id: generateRandomNumber(),
-      item: "Warm Up",
-      isCompleted: false,
-    },
-  ]);
+  const todoList = useTodoList();
+  const dispatch = useTodoDispatch();
   const [item, setItem] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number>(0);
 
   const totalCompleted = todoList.filter((todo) => todo.isCompleted).length;
-
-  function addTodo() {
-    if (item.length < 1) {
-      return;
-    }
-    setTodoList([
-      ...todoList,
-      {
-        id: generateRandomNumber(),
-        item,
-        isCompleted: false,
-      },
-    ]);
-    setItem("");
-  }
 
   function activateEditing(id: number, item: string) {
     setIsEditing(true);
@@ -44,45 +19,21 @@ function App() {
     setItem(item);
   }
 
-  function editTodo(id: number | null) {
+  function editTodo(id: number) {
     if (typeof id == "number") {
-      updateItem(id);
+      if (!item) return;
+      dispatch({
+        type: "updateTodo",
+        payload: {
+          id,
+          item,
+        },
+      });
+      setItem("");
+      setIsEditing(false);
     }
   }
 
-  function updateItem(id: number) {
-    const updatedItem = todoList.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, item: item };
-      }
-      return todo;
-    });
-    setTodoList(updatedItem);
-    setItem("");
-    setIsEditing(false);
-  }
-
-  function removeTodo(id: number) {
-    const filteredTodoList = todoList.filter((todo) => todo.id !== id);
-    setTodoList(filteredTodoList);
-  }
-
-  function toogleComplete(id: number) {
-    const toogledTodoList = todoList.map((todo) => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          isCompleted: !todo.isCompleted,
-        };
-      }
-      return todo;
-    });
-    setTodoList(toogledTodoList);
-  }
-
-  function removeAllTodo() {
-    setTodoList([]);
-  }
   return (
     <>
       <div>
@@ -114,7 +65,20 @@ function App() {
                 fontSize: "14px",
                 cursor: "pointer",
               }}
-              onClick={isEditing ? () => editTodo(editingId) : () => addTodo()}
+              onClick={
+                isEditing
+                  ? () => editTodo(editingId)
+                  : () => {
+                      if (!item) return;
+                      dispatch({
+                        type: "added",
+                        payload: {
+                          item,
+                        },
+                      });
+                      setItem("");
+                    }
+              }
             >
               {isEditing ? "Edit" : "Add"}
             </button>
@@ -122,12 +86,7 @@ function App() {
         </div>
         {todoList.length > 0 ? (
           <div>
-            <Todo
-              todoList={todoList}
-              removeTodo={removeTodo}
-              toogleComplete={toogleComplete}
-              activateEditing={activateEditing}
-            />
+            <Todo todoList={todoList} activateEditing={activateEditing} />
             <div
               style={{
                 display: "flex",
@@ -150,7 +109,13 @@ function App() {
                   cursor: "pointer",
                   color: "red",
                 }}
-                onClickfunc={removeAllTodo}
+                onClickfunc={() => {
+                  dispatch({
+                    type: "clearAll",
+                  });
+                  setItem("");
+                  setIsEditing(false);
+                }}
               >
                 clearAll
               </Button>

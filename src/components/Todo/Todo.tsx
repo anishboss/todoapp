@@ -1,23 +1,12 @@
+import { ITodoItem } from "../../contexts/TodoContext";
 import { TodoItem } from "./TodoItem";
 
-export interface ITodoItem {
-  id: number;
-  item: string;
-  isCompleted: boolean;
-}
 export interface ITodoProps {
   todoList: ITodoItem[];
-  removeTodo: (id: number) => void;
-  toogleComplete: (id: number) => void;
   activateEditing: (id: number, item: string) => void;
 }
 
-export const Todo: React.FC<ITodoProps> = ({
-  todoList,
-  removeTodo,
-  toogleComplete,
-  activateEditing,
-}) => {
+export const Todo: React.FC<ITodoProps> = ({ todoList, activateEditing }) => {
   return (
     <>
       <ul
@@ -35,8 +24,6 @@ export const Todo: React.FC<ITodoProps> = ({
         {todoList.map((todo: ITodoItem) => (
           <TodoItem
             todo={todo}
-            removeTodo={removeTodo}
-            toogleComplete={toogleComplete}
             activateEditing={activateEditing}
             key={todo.id}
           />

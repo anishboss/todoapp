@@ -1,21 +1,16 @@
 import Button from "./Button/Button";
+import { ITodoItem, useTodoDispatch } from "../../contexts/TodoContext";
 
 export interface ITodoItemProps {
-  todo: {
-    id: number;
-    item: string;
-    isCompleted: boolean;
-  };
-  removeTodo: (id: number) => void;
-  toogleComplete: (id: number) => void;
+  todo: ITodoItem;
   activateEditing: (id: number, item: string) => void;
 }
 export const TodoItem: React.FC<ITodoItemProps> = ({
   todo,
-  removeTodo,
-  toogleComplete,
   activateEditing,
 }) => {
+  const dispatch = useTodoDispatch();
+
   return (
     <li
       key={todo.id}
@@ -38,7 +33,14 @@ export const TodoItem: React.FC<ITodoItemProps> = ({
             : { fontSize: "16px", textDecoration: "none" }
         }
       >
-        <span onClick={() => toogleComplete(todo.id)}>
+        <span
+          onClick={() =>
+            dispatch({
+              type: "toogleComplete",
+              payload: { id: todo.id },
+            })
+          }
+        >
           <input
             type="checkbox"
             name="isCompleted"
@@ -81,7 +83,14 @@ export const TodoItem: React.FC<ITodoItemProps> = ({
             fontSize: "14px",
             cursor: "pointer",
           }}
-          onClickfunc={() => removeTodo(todo.id)}
+          onClickfunc={() => {
+            dispatch({
+              type: "remove",
+              payload: {
+                id: todo.id,
+              },
+            });
+          }}
         >
           Delete
         </Button>
