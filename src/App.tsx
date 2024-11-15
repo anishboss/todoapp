@@ -2,12 +2,17 @@ import { useRef, useState } from "react";
 import "./App.css";
 import { Todo } from "./components/Todo/Todo";
 import Button from "./components/Todo/Button/Button";
-import { useTodoList, useTodoDispatch } from "./contexts/TodoContext";
 import { setLocalStorage } from "./utils/localStorage.util";
+import { useDispatch, useSelector } from "react-redux";
+import { added, clearAll, updateTodo } from "./app/slices/todoSlice";
+import { ITodoItem } from "./types";
+import { RootState } from "./app/store";
 
 function App() {
-  const todoList = useTodoList();
-  const dispatch = useTodoDispatch();
+  const todoList: ITodoItem[] = useSelector(
+    (state: RootState) => state.todo.todoList
+  );
+  const dispatch = useDispatch();
   const [item, setItem] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<number>(0);
@@ -27,13 +32,7 @@ function App() {
   function editTodo(id: number) {
     if (typeof id == "number") {
       if (!item) return;
-      dispatch({
-        type: "updateTodo",
-        payload: {
-          id,
-          item,
-        },
-      });
+      dispatch(updateTodo({ id, item }));
       setItem("");
       setIsEditing(false);
     }
@@ -61,8 +60,8 @@ function App() {
               onChange={(e) => setItem(e.target.value)}
               placeholder="Enter todo item"
             />
-            <button
-              style={{
+            <Button
+              styleType={{
                 border: "none",
                 padding: "10px",
                 borderRadius: "10px",
@@ -71,23 +70,18 @@ function App() {
                 fontSize: "14px",
                 cursor: "pointer",
               }}
-              onClick={
+              onClickfunc={
                 isEditing
                   ? () => editTodo(editingId)
                   : () => {
                       if (!item) return;
-                      dispatch({
-                        type: "added",
-                        payload: {
-                          item,
-                        },
-                      });
+                      dispatch(added({ item }));
                       setItem("");
                     }
               }
             >
               {isEditing ? "Edit" : "Add"}
-            </button>
+            </Button>
           </form>
         </div>
         {todoList.length > 0 ? (
@@ -117,9 +111,7 @@ function App() {
                   color: "red",
                 }}
                 onClickfunc={() => {
-                  dispatch({
-                    type: "clearAll",
-                  });
+                  dispatch(clearAll());
                   setItem("");
                   setIsEditing(false);
                 }}

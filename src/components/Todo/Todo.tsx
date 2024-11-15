@@ -1,4 +1,4 @@
-import { ITodoItem } from "../../contexts/TodoContext";
+import { ITodoItem } from "../../types";
 import { TodoItem } from "./TodoItem";
 
 export interface ITodoProps {

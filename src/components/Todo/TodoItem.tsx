@@ -1,5 +1,7 @@
 import Button from "./Button/Button";
-import { ITodoItem, useTodoDispatch } from "../../contexts/TodoContext";
+import { useDispatch } from "react-redux";
+import { remove, toogleComplete } from "../../app/slices/todoSlice";
+import { ITodoItem } from "../../types";
 
 export interface ITodoItemProps {
   todo: ITodoItem;
@@ -9,8 +11,7 @@ export const TodoItem: React.FC<ITodoItemProps> = ({
   todo,
   activateEditing,
 }) => {
-  const dispatch = useTodoDispatch();
-
+  const dispatch = useDispatch();
   return (
     <li
       key={todo.id}
@@ -33,14 +34,7 @@ export const TodoItem: React.FC<ITodoItemProps> = ({
             : { fontSize: "16px", textDecoration: "none" }
         }
       >
-        <span
-          onClick={() =>
-            dispatch({
-              type: "toogleComplete",
-              payload: { id: todo.id },
-            })
-          }
-        >
+        <span onClick={() => dispatch(toogleComplete({ id: todo.id }))}>
           <input
             type="checkbox"
             name="isCompleted"
@@ -84,12 +78,7 @@ export const TodoItem: React.FC<ITodoItemProps> = ({
             cursor: "pointer",
           }}
           onClickfunc={() => {
-            dispatch({
-              type: "remove",
-              payload: {
-                id: todo.id,
-              },
-            });
+            dispatch(remove({ id: todo.id }));
           }}
         >
           Delete
