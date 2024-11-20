@@ -3,16 +3,12 @@ import React, { ReactNode } from "react";
 interface IButtonProps {
   children: ReactNode;
   styleType: object;
-  onClickfunc: () => void;
+  onClick: () => void;
 }
 
-const Button: React.FC<IButtonProps> = ({
-  children,
-  styleType,
-  onClickfunc,
-}) => {
+const Button: React.FC<IButtonProps> = ({ children, styleType, onClick }) => {
   return (
-    <button style={styleType} onClick={onClickfunc}>
+    <button style={styleType} onClick={onClick}>
       {children}
     </button>
   );

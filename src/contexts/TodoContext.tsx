@@ -1,47 +1,50 @@
-import { createContext, ReactNode, useContext, useReducer } from "react";
+import { createContext, ReactNode, useReducer } from "react";
 import generateRandomNumber from "../utils/generateRandomNumber";
-import { getLocalStorage } from "../utils/localStorage.util";
+import { getLocalStorage, setLocalStorage } from "../utils/localStorage.util";
 
 export interface ITodoItem {
   id: number;
   item: string;
   isCompleted: boolean;
 }
+interface ITodoContextProps {
+  todoList: ITodoItem[];
+  dispatch: React.Dispatch<TodoAction>;
+  total: number;
+  completed: number;
+}
 
-type TodoAction =
+export type TodoAction =
   | { type: "added"; payload: { item: string } }
   | { type: "updateTodo"; payload: { id: number; item: string } }
   | { type: "remove"; payload: { id: number } }
   | { type: "toogleComplete"; payload: { id: number } }
   | { type: "clearAll" };
-const localTodoList: ITodoItem[] = getLocalStorage("todoList");
-const initialTodoList: ITodoItem[] = localTodoList || [];
 
-export const TodoContext = createContext<ITodoItem[]>([]);
-export const TodoDispatchContext = createContext<React.Dispatch<TodoAction>>(
-  () => {
-    throw new Error("TodoDispatchContext must be used within a TodoProvider");
-  }
-);
+const localTodoList: ITodoItem[] = getLocalStorage("todoList");
+export const initialTodoList: ITodoItem[] = localTodoList || [];
+
+export const TodoContext = createContext<ITodoContextProps>(() => {
+  throw new Error("TodoContextProvider must be used before using TodoContext");
+});
 
 export function TodoProvider({ children }: { children: ReactNode }) {
   const [todoList, dispatch] = useReducer(todoReducer, initialTodoList);
+  const totalCompletedTask = todoList.filter((todo) => todo.isCompleted).length;
+  setLocalStorage("todoList", todoList);
 
   return (
-    <TodoContext.Provider value={todoList}>
-      <TodoDispatchContext.Provider value={dispatch}>
-        {children}
-      </TodoDispatchContext.Provider>
+    <TodoContext.Provider
+      value={{
+        todoList,
+        dispatch,
+        total: todoList.length,
+        completed: totalCompletedTask,
+      }}
+    >
+      {children}
     </TodoContext.Provider>
   );
-}
-
-export function useTodoList() {
-  return useContext(TodoContext);
-}
-
-export function useTodoDispatch() {
-  return useContext(TodoDispatchContext);
 }
 
 export function todoReducer(
@@ -53,7 +56,7 @@ export function todoReducer(
       return [
         {
           id: generateRandomNumber(),
-          item: action.payload?.item,
+          item: action.payload.item,
           isCompleted: false,
         },
         ...todoList,
@@ -61,18 +64,18 @@ export function todoReducer(
     }
     case "updateTodo": {
       return todoList.map((todo) => {
-        if (todo.id === action.payload?.id) {
+        if (todo.id === action.payload.id) {
           return { ...todo, item: action.payload.item };
         }
         return todo;
       });
     }
     case "remove": {
-      return todoList.filter((todo) => todo.id !== action.payload?.id);
+      return todoList.filter((todo) => todo.id !== action.payload.id);
     }
     case "toogleComplete": {
       return todoList.map((todo) => {
-        if (todo.id === action.payload?.id) {
+        if (todo.id === action.payload.id) {
           return {
             ...todo,
             isCompleted: !todo.isCompleted,
