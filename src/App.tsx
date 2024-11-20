@@ -5,6 +5,7 @@ import Button from "./components/Todo/Button/Button";
 import { TodoContext } from "./contexts/TodoContext";
 import FormModel from "./components/Model/TodoFormModel";
 import AddTodoForm from "./components/Forms/AddTodoForm";
+import { Link } from "react-router-dom";
 
 function App() {
   const { completed, total, todoList, dispatch } = useContext(TodoContext);
@@ -74,8 +75,10 @@ function App() {
             >
               clearAll
             </Button>
-            <Button
-              styleType={{
+
+            <Link
+              to={"/chart"}
+              style={{
                 border: "none",
                 padding: "10px",
                 borderRadius: "10px",
@@ -84,11 +87,11 @@ function App() {
                 fontSize: "14px",
                 cursor: "pointer",
                 color: "red",
+                backgroundColor: "yellow",
               }}
-              onClick={() => {}}
             >
               Finish
-            </Button>
+            </Link>
           </div>
           {isModelOpen && (
             <div
