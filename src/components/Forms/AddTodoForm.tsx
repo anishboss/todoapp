@@ -42,7 +42,7 @@ const AddTodoForm = ({ setIsModelOpen, dispatch }: ITodoFormProps) => {
             cursor: "pointer",
           }}
           onClick={() => {
-            if (!item) return;
+            if (!item.trim()) return;
             dispatch({
               type: "added",
               payload: {

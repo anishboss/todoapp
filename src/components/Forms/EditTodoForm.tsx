@@ -47,7 +47,7 @@ const EditTodoForm = ({
             cursor: "pointer",
           }}
           onClick={() => {
-            if (!item) return;
+            if (!item.trim()) return;
             dispatch({
               type: "updateTodo",
               payload: {

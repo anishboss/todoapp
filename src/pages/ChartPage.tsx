@@ -1,4 +1,3 @@
-import React from "react";
 import TodoCountChart from "../components/Charts/TodoCountChart";
 import { Link } from "react-router-dom";
 
@@ -18,7 +17,6 @@ const ChartPage = () => {
             fontSize: "14px",
             cursor: "pointer",
             color: "white",
-            // margin: "30px",
             backgroundColor: "black",
           }}
         >

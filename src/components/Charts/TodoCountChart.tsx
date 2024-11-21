@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { TodoContext } from "../../contexts/TodoContext";
 import Chart from "react-google-charts";
 
@@ -22,7 +22,7 @@ const TodoCountChart = () => {
         data={data}
         options={options}
         width={"100%"}
-        height={"400px"}
+        height={"600px"}
       />
     </div>
   );

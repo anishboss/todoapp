@@ -24,8 +24,15 @@ export type TodoAction =
 const localTodoList: ITodoItem[] = getLocalStorage("todoList");
 export const initialTodoList: ITodoItem[] = localTodoList || [];
 
-export const TodoContext = createContext<ITodoContextProps>(() => {
-  throw new Error("TodoContextProvider must be used before using TodoContext");
+// export const TodoContext = createContext<ITodoContextProps>(() => {
+//   throw new Error("TodoContextProvider must be used before using TodoContext");
+// });
+
+export const TodoContext = createContext<ITodoContextProps>({
+  todoList: initialTodoList,
+  dispatch: () => ({}),
+  total: 0,
+  completed: 0,
 });
 
 export function TodoProvider({ children }: { children: ReactNode }) {
