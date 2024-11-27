@@ -158,20 +158,16 @@ const SunriseFormPage = () => {
     acNo: "",
   });
 
-  const [errors, setErrors] = useState<IPersonErrors>({});
+  const [errors, setErrors] = useState<IPersonErrors>();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newErrors = validateForm(person);
-    console.log("person", person);
     setErrors(newErrors);
-    console.log("errors", newErrors);
     if (Object.keys(newErrors).length > 0) {
       return;
     }
     alert(JSON.stringify(person));
-    console.log("newErrors", newErrors);
-    console.log("form submitted");
   };
 
   const validateForm = (data: IPerson) => {
@@ -182,15 +178,11 @@ const SunriseFormPage = () => {
     } else if (data.fullName.length < 3) {
       errors.fullName = "FullName must be at least 3 characters long";
     }
-    console.log("dob", data.dob);
     if (!data.dob) {
       errors.dob = "Date Of Birth is required." as unknown as string;
     }
-    console.log("data.ciis", typeof data.citizenship.id, data.citizenship.id);
 
     if (data.document.type === "citizenship") {
-      console.log("iaminsitde", !data.citizenship.id);
-
       if (!data.citizenship.id.trim()) {
         errors.citizenship = {
           ...errors.citizenship,
@@ -325,11 +317,10 @@ const SunriseFormPage = () => {
                     placeholder="fullname"
                     onChange={(e) => {
                       setPerson({ ...person, fullName: e.target.value });
-                      console.log("e", e.target.value);
                     }}
                     value={person.fullName}
                   />
-                  {errors.fullName && (
+                  {errors?.fullName && (
                     <span style={{ color: "red" }}>{errors.fullName}</span>
                   )}
                 </div>
@@ -347,7 +338,7 @@ const SunriseFormPage = () => {
                     setPerson({ ...person, dob: new Date(e.target.value) });
                   }}
                 />
-                {errors.dob && (
+                {errors?.dob && (
                   <span style={{ color: "red" }}>
                     {errors.dob as unknown as string}
                   </span>
@@ -804,7 +795,7 @@ const SunriseFormPage = () => {
                         }}
                         value={person.fatherName}
                       />
-                      {errors.fatherName && (
+                      {errors?.fatherName && (
                         <span style={{ color: "red" }}>
                           {errors.fatherName}
                         </span>
@@ -825,7 +816,7 @@ const SunriseFormPage = () => {
                         }}
                         value={person.grandFatherName}
                       />
-                      {errors.grandFatherName && (
+                      {errors?.grandFatherName && (
                         <span style={{ color: "red" }}>
                           {errors.grandFatherName}
                         </span>
