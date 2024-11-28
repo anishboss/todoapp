@@ -2,13 +2,17 @@ import { useState } from "react";
 import { IPerson, useSunriseFormContext } from "../../../contexts/FormContext";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { classValidatorResolver } from "@hookform/resolvers/class-validator";
+import { SectionB } from "../../../validators/sunrise-form/SectionB";
+
+const resolver = classValidatorResolver(SectionB);
 
 const SectionBForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IPerson>();
+  } = useForm<IPerson>({ resolver });
 
   const { formData } = useSunriseFormContext();
   const { updateFormData } = useSunriseFormContext();
@@ -56,6 +60,14 @@ const SectionBForm = () => {
       return;
     } else {
       setIsSourceOfIncome(true);
+    }
+
+    if (isOtherIncome) {
+      if (!data.sourceOfIncome.other) {
+        return;
+      }
+    } else {
+      setIsOtherIncome(false);
     }
 
     if (!data.sourceOfIncome.isOther) {
@@ -132,14 +144,11 @@ const SectionBForm = () => {
                   className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                   type="text"
                   placeholder="pan no."
-                  {...register("panNo", {
-                    minLength: 9,
-                    maxLength: 9,
-                  })}
+                  {...register("panNo")}
                   defaultValue={formData.panNo}
                 />
                 {errors.panNo && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">{errors.panNo.message}</span>
                 )}
               </div>
             </div>
@@ -160,11 +169,6 @@ const SectionBForm = () => {
                       {...register("sourceOfIncome.isBusiness")}
                     />
                     <label className="font-bold">Business</label>
-                    {errors.sourceOfIncome?.isBusiness && (
-                      <span className="text-red-500">
-                        This field is required
-                      </span>
-                    )}
                   </div>
                 </div>
                 <div className="flex w-1/4 justify-start items-center">
@@ -230,9 +234,6 @@ const SectionBForm = () => {
                   <label className="font-bold h-fit">
                     Other(Please specify)
                   </label>
-                  {errors.sourceOfIncome?.isAtLeastOne && (
-                    <span className="text-red-500">This field is required</span>
-                  )}
                 </div>
               </div>
               {!isSourceOfIncome && (
@@ -250,14 +251,16 @@ const SectionBForm = () => {
                       cols={60}
                       className=" h-fit inline-block border border-solid border-[#ccc] rounded"
                       defaultValue={formData?.sourceOfIncome?.other}
-                      {...register("sourceOfIncome.other", {
-                        required: isOtherIncome,
-                        minLength: 3,
-                      })}
+                      {...register("sourceOfIncome.other")}
                     />
+                    {isOtherIncome && (
+                      <span className="text-red-500">
+                        Please give a valid source of income.
+                      </span>
+                    )}
                     {errors.sourceOfIncome?.other && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.sourceOfIncome.other.message}
                       </span>
                     )}
                   </div>
@@ -270,21 +273,23 @@ const SectionBForm = () => {
                   <div className="flex mx-2 my-0 gap-1 justify-start items-center">
                     <input
                       className=" h-fit inline-block border border-solid border-[#ccc] rounded"
-                      type="number"
+                      type="text"
                       defaultValue={
                         formData?.sourceOfIncome?.projectedAnnualTransaction
                       }
                       {...register(
                         "sourceOfIncome.projectedAnnualTransaction",
                         {
-                          required: true,
-                          minLength: 4,
+                          valueAsNumber: true,
                         }
                       )}
                     />
                     {errors.sourceOfIncome?.projectedAnnualTransaction && (
                       <span className="text-red-500">
-                        This field is required
+                        {
+                          errors.sourceOfIncome.projectedAnnualTransaction
+                            .message
+                        }
                       </span>
                     )}
                   </div>
@@ -322,15 +327,11 @@ const SectionBForm = () => {
                           className="inline-block border border-solid border-[#ccc] rounded "
                           type="text"
                           defaultValue={formData?.landLord?.fullName}
-                          {...register("landLord.fullName", {
-                            required: true,
-                            minLength: 3,
-                            maxLength: 30,
-                          })}
+                          {...register("landLord.fullName")}
                         />
                         {errors.landLord?.fullName && (
                           <span className="text-red-500">
-                            This field is required
+                            {errors.landLord.fullName.message}
                           </span>
                         )}
                       </div>
@@ -342,15 +343,11 @@ const SectionBForm = () => {
                           className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                           type="text"
                           defaultValue={formData?.landLord?.phoneNo}
-                          {...register("landLord.phoneNo", {
-                            required: true,
-                            minLength: 10,
-                            maxLength: 10,
-                          })}
+                          {...register("landLord.phoneNo")}
                         />
                         {errors.landLord?.phoneNo && (
                           <span className="text-red-500">
-                            This field is required
+                            {errors.landLord.phoneNo.message}
                           </span>
                         )}
                       </div>
@@ -364,15 +361,11 @@ const SectionBForm = () => {
                           className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                           type="text"
                           defaultValue={formData?.landLord?.district}
-                          {...register("landLord.district", {
-                            required: true,
-                            minLength: 3,
-                            maxLength: 30,
-                          })}
+                          {...register("landLord.district")}
                         />
                         {errors.landLord?.district && (
                           <span className="text-red-500">
-                            This field is required
+                            {errors.landLord.district.message}
                           </span>
                         )}
                       </div>
@@ -384,15 +377,11 @@ const SectionBForm = () => {
                           className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                           type="text"
                           defaultValue={formData?.landLord?.municipality}
-                          {...register("landLord.municipality", {
-                            required: true,
-                            minLength: 3,
-                            maxLength: 30,
-                          })}
+                          {...register("landLord.municipality")}
                         />
                         {errors.landLord?.municipality && (
                           <span className="text-red-500">
-                            This field is required
+                            {errors.landLord.municipality.message}{" "}
                           </span>
                         )}
                       </div>
@@ -406,14 +395,11 @@ const SectionBForm = () => {
                           className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                           type="text"
                           defaultValue={formData?.landLord?.village}
-                          {...register("landLord.village", {
-                            required: true,
-                            minLength: 3,
-                          })}
+                          {...register("landLord.village")}
                         />
                         {errors.landLord?.village && (
                           <span className="text-red-500">
-                            This field is required
+                            {errors.landLord.village.message}{" "}
                           </span>
                         )}
                       </div>
@@ -425,9 +411,7 @@ const SectionBForm = () => {
                           className="h-fit mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                           type="text"
                           defaultValue={formData?.landLord?.houseNo}
-                          {...register("landLord.houseNo", {
-                            minLength: 1,
-                          })}
+                          {...register("landLord.houseNo")}
                         />
                       </div>
                     </div>
@@ -438,14 +422,11 @@ const SectionBForm = () => {
                           className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                           type="text"
                           defaultValue={formData?.landLord?.wardNo}
-                          {...register("landLord.wardNo", {
-                            required: true,
-                            minLength: 1,
-                          })}
+                          {...register("landLord.wardNo")}
                         />
                         {errors.landLord?.wardNo && (
                           <span className="text-red-500">
-                            This field is required
+                            {errors.landLord.wardNo.message}
                           </span>
                         )}
                       </div>
@@ -492,7 +473,7 @@ const SectionBForm = () => {
                     />
                     {errors.politicalOverview?.description && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.politicalOverview.description.message}
                       </span>
                     )}
                   </div>
@@ -525,14 +506,11 @@ const SectionBForm = () => {
                       cols={120}
                       className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       defaultValue={formData?.nationality?.description}
-                      {...register("nationality.description", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("nationality.description")}
                     />
                     {errors.nationality?.description && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.nationality.description.message}{" "}
                       </span>
                     )}
                   </div>
@@ -562,14 +540,11 @@ const SectionBForm = () => {
                       cols={120}
                       className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       defaultValue={formData?.benificialOwner?.description}
-                      {...register("benificialOwner.description", {
-                        required: true,
-                        minLength: 2,
-                      })}
+                      {...register("benificialOwner.description")}
                     />
                     {errors.benificialOwner?.description && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.benificialOwner.description.message}
                       </span>
                     )}
                   </div>

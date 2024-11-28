@@ -2,26 +2,18 @@ import { useState } from "react";
 import { IPerson, useSunriseFormContext } from "../../../contexts/FormContext";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { SectionC } from "../../../validators/sunrise-form/SectionC";
+import { classValidatorResolver } from "@hookform/resolvers/class-validator";
+import { convertToBase64 } from "../../../utils/common";
 
-const convertToBase64 = (file: Blob) => {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onload = () => {
-      resolve(fileReader.result);
-    };
-    fileReader.onerror = (error) => {
-      reject(error);
-    };
-  });
-};
+const resolver = classValidatorResolver(SectionC);
 
 const SectionCForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IPerson>();
+  } = useForm<IPerson>({ resolver });
 
   const { formData, updateFormData } = useSunriseFormContext();
 
@@ -40,7 +32,7 @@ const SectionCForm = () => {
     leftThumb: formData.images.leftThumb,
     signature: formData.images.signature,
   });
-  const [hasNominee, setHasNominee] = useState<boolean>(formData.hasNominee);
+  const [hasNominee, setHasNominee] = useState(formData.hasNominee);
   const [isNomineeMinor, setIsNomineeMinor] = useState<boolean>(
     formData.nominee.isMinor
   );
@@ -277,12 +269,15 @@ const SectionCForm = () => {
               <input
                 className="inline-block border border-solid border-[#ccc] rounded"
                 type="checkbox"
+                {...register("hasNominee")}
                 onChange={() => {
                   if (hasNominee && isNomineeMinor) {
+                    console.log("ima hasNomineee asi isnomineeminor");
                     setHasNominee(!hasNominee);
                     setIsNomineeMinor(false);
                   } else {
-                    setHasNominee(!hasNominee);
+                    console.log("only sethsnominee");
+                    setHasNominee(() => !hasNominee);
                   }
                 }}
                 checked={hasNominee}
@@ -304,6 +299,11 @@ const SectionCForm = () => {
                   })}
                   defaultValue={formData?.nominee?.acNo}
                 />
+                {errors.nominee?.acNo && (
+                  <span className="text-red-500">
+                    {errors.nominee.acNo.message}
+                  </span>
+                )}
                 with your Bank, nominate the following named to be entitled for
                 the balance of the account in the event of my death.
               </p>
@@ -316,16 +316,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="fullname"
-                        {...register("nominee.fullName", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
-                        defaultValue={formData?.nominee?.fullName}
+                        {...register("nominee.fullName")}
+                        defaultValue={formData.nominee.fullName}
                       />
                       {errors.nominee?.fullName && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.fullName.message}
                         </span>
                       )}
                     </div>
@@ -337,16 +333,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="relationship"
-                        {...register("nominee.relationship", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.relationship")}
                         defaultValue={formData?.nominee?.relationship}
                       />
                       {errors.nominee?.relationship && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.relationship.message}
                         </span>
                       )}
                     </div>
@@ -361,16 +353,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="fullname"
-                        {...register("nominee.fullName", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
-                        defaultValue={formData?.nominee?.fullName}
+                        {...register("nominee.parentName")}
+                        defaultValue={formData?.nominee?.parentName}
                       />
-                      {errors.nominee?.fullName && (
+                      {errors.nominee?.parentName && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.parentName.message}
                         </span>
                       )}
                     </div>
@@ -385,16 +373,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="nationality"
-                        {...register("nominee.nationality", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
+                        {...register("nominee.nationality")}
                         defaultValue={formData?.nominee?.nationality}
                       />
-                      {errors.nominee?.fullName && (
+                      {errors.nominee?.nationality && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.nationality.message}
                         </span>
                       )}
                     </div>
@@ -406,16 +390,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="Citizenship Number"
-                        {...register("nominee.citizenshipNo", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.citizenshipNo")}
                         defaultValue={formData?.nominee?.citizenshipNo}
                       />
                       {errors.nominee?.citizenshipNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.citizenshipNo.message}
                         </span>
                       )}
                     </div>
@@ -426,15 +406,12 @@ const SectionCForm = () => {
                       <input
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="date"
-                        placeholder="Citizenship Number"
-                        {...register("nominee.dob", {
-                          required: true,
-                        })}
+                        {...register("nominee.dob")}
                         defaultValue={`${formData?.nominee?.dob}`}
                       />
                       {errors.nominee?.dob && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.dob.message}
                         </span>
                       )}
                     </div>
@@ -449,16 +426,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="permanent address"
-                        {...register("nominee.permanentAddress", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
+                        {...register("nominee.permanentAddress")}
                         defaultValue={formData?.nominee?.permanentAddress}
                       />
                       {errors.nominee?.permanentAddress && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.permanentAddress.message}
                         </span>
                       )}
                     </div>
@@ -470,16 +443,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="correspondence Address"
-                        {...register("nominee.correspondenceAddress", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.correspondenceAddress")}
                         defaultValue={formData?.nominee?.correspondenceAddress}
                       />
                       {errors.nominee?.correspondenceAddress && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.correspondenceAddress.message}
                         </span>
                       )}
                     </div>
@@ -494,15 +463,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="telephone number"
-                        {...register("nominee.phoneNo", {
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
+                        {...register("nominee.phoneNo")}
                         defaultValue={formData?.nominee?.phoneNo}
                       />
                       {errors.nominee?.phoneNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.phoneNo.message}
                         </span>
                       )}
                     </div>
@@ -514,15 +480,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="office tel no."
-                        {...register("nominee.officeNo", {
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.officeNo")}
                         defaultValue={formData?.nominee?.officeNo}
                       />
                       {errors.nominee?.officeNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.officeNo.message}
                         </span>
                       )}
                     </div>
@@ -534,16 +497,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="mobile no."
-                        {...register("nominee.mobileNo", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.mobileNo")}
                         defaultValue={formData?.nominee?.mobileNo}
                       />
                       {errors.nominee?.mobileNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.mobileNo.message}
                         </span>
                       )}
                     </div>
@@ -584,16 +543,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="fullname"
-                        {...register("nominee.fullName", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
+                        {...register("nominee.fullName")}
                         defaultValue={formData?.nominee?.fullName}
                       />
                       {errors.nominee?.fullName && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.fullName.message}
                         </span>
                       )}
                     </div>
@@ -605,16 +560,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="relationship"
-                        {...register("nominee.relationship", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.relationship")}
                         defaultValue={formData?.nominee?.relationship}
                       />
                       {errors.nominee?.relationship && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.relationship.message}
                         </span>
                       )}
                     </div>
@@ -628,17 +579,13 @@ const SectionCForm = () => {
                       <input
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
-                        placeholder="fullname"
-                        {...register("nominee.fullName", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
-                        defaultValue={formData?.nominee?.fullName}
+                        placeholder="parentName"
+                        {...register("nominee.parentName")}
+                        defaultValue={formData?.nominee?.parentName}
                       />
-                      {errors.nominee?.fullName && (
+                      {errors.nominee?.parentName && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.parentName.message}
                         </span>
                       )}
                     </div>
@@ -653,16 +600,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="nationality"
-                        {...register("nominee.nationality", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
+                        {...register("nominee.nationality")}
                         defaultValue={formData?.nominee?.nationality}
                       />
-                      {errors.nominee?.fullName && (
+                      {errors.nominee?.nationality && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.nationality.message}
                         </span>
                       )}
                     </div>
@@ -674,16 +617,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="Citizenship Number"
-                        {...register("nominee.citizenshipNo", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.citizenshipNo")}
                         defaultValue={formData?.nominee?.citizenshipNo}
                       />
                       {errors.nominee?.citizenshipNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.citizenshipNo.message}
                         </span>
                       )}
                     </div>
@@ -694,15 +633,12 @@ const SectionCForm = () => {
                       <input
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="date"
-                        placeholder="Citizenship Number"
-                        {...register("nominee.dob", {
-                          required: true,
-                        })}
+                        {...register("nominee.dob")}
                         defaultValue={`${formData?.nominee?.dob}`}
                       />
                       {errors.nominee?.dob && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.dob.message}
                         </span>
                       )}
                     </div>
@@ -717,16 +653,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="permanent address"
-                        {...register("nominee.permanentAddress", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
+                        {...register("nominee.permanentAddress")}
                         defaultValue={formData?.nominee?.permanentAddress}
                       />
                       {errors.nominee?.permanentAddress && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.permanentAddress.message}
                         </span>
                       )}
                     </div>
@@ -738,16 +670,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="correspondence Address"
-                        {...register("nominee.correspondenceAddress", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.correspondenceAddress")}
                         defaultValue={formData?.nominee?.correspondenceAddress}
                       />
                       {errors.nominee?.correspondenceAddress && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.correspondenceAddress.message}
                         </span>
                       )}
                     </div>
@@ -762,15 +690,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="telephone number"
-                        {...register("nominee.phoneNo", {
-                          minLength: 3,
-                          maxLength: 50,
-                        })}
+                        {...register("nominee.phoneNo")}
                         defaultValue={formData?.nominee?.phoneNo}
                       />
                       {errors.nominee?.phoneNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.phoneNo.message}
                         </span>
                       )}
                     </div>
@@ -782,15 +707,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="office tel no."
-                        {...register("nominee.officeNo", {
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.officeNo")}
                         defaultValue={formData?.nominee?.officeNo}
                       />
                       {errors.nominee?.officeNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.officeNo.message}
                         </span>
                       )}
                     </div>
@@ -802,16 +724,12 @@ const SectionCForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         placeholder="mobile no."
-                        {...register("nominee.mobileNo", {
-                          required: true,
-                          minLength: 3,
-                          maxLength: 20,
-                        })}
+                        {...register("nominee.mobileNo")}
                         defaultValue={formData?.nominee?.mobileNo}
                       />
                       {errors.nominee?.mobileNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.nominee.mobileNo.message}
                         </span>
                       )}
                     </div>

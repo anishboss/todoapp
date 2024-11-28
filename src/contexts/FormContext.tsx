@@ -8,7 +8,6 @@ import {
 import { getLocalStorage, setLocalStorage } from "../utils/localStorage.util";
 
 export interface IPerson {
-  isSectionAComplete: boolean;
   fullName: string;
   dob: Date | null;
   citizenship: {
@@ -60,15 +59,14 @@ export interface IPerson {
   acNo?: string;
   panNo?: string;
   sourceOfIncome: {
-    isAtLeastOne: boolean;
-    isBusiness: boolean;
-    isSalary: boolean;
-    isROI: boolean;
-    isInheritance: boolean;
-    isRemittance: boolean;
-    isOther: boolean;
-    other: string;
-    projectedAnnualTransaction: string;
+    isBusiness?: boolean;
+    isSalary?: boolean;
+    isROI?: boolean;
+    isInheritance?: boolean;
+    isRemittance?: boolean;
+    isOther?: boolean;
+    other?: string;
+    projectedAnnualTransaction: number;
   };
   isTenant: boolean;
   landLord?: {
@@ -78,7 +76,7 @@ export interface IPerson {
     municipality: string;
     village?: string;
     houseNo?: string;
-    wardNo?: string;
+    wardNo: string;
   };
 
   politicalOverview: {
@@ -100,11 +98,11 @@ export interface IPerson {
     signature: string;
   };
   accountOperation: {
-    isSelf: boolean;
-    isJoint: boolean;
-    isAnyone: boolean;
-    isOther: boolean;
-    other: string;
+    isSelf?: boolean;
+    isJoint?: boolean;
+    isAnyone?: boolean;
+    isOther?: boolean;
+    other?: string;
   };
   hasNominee: boolean;
   nominee: {
@@ -125,7 +123,6 @@ export interface IPerson {
 }
 
 export const person: IPerson = {
-  isSectionAComplete: false,
   fullName: "",
   dob: null,
   citizenship: {
@@ -177,7 +174,6 @@ export const person: IPerson = {
   acNo: "",
   panNo: "",
   sourceOfIncome: {
-    isAtLeastOne: false,
     isBusiness: false,
     isSalary: false,
     isROI: false,
@@ -185,7 +181,7 @@ export const person: IPerson = {
     isRemittance: false,
     isOther: false,
     other: "",
-    projectedAnnualTransaction: "",
+    projectedAnnualTransaction: 0,
   },
   isTenant: false,
   landLord: {
@@ -193,6 +189,7 @@ export const person: IPerson = {
     phoneNo: "",
     district: "",
     municipality: "",
+    wardNo: "",
   },
   politicalOverview: {
     isPoliticallyEngaged: false,

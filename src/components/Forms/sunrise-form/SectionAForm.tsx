@@ -1,13 +1,17 @@
+import { classValidatorResolver } from "@hookform/resolvers/class-validator";
 import { IPerson, useSunriseFormContext } from "../../../contexts/FormContext";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { SectionA } from "../../../validators/sunrise-form/SectionA";
+
+const resolver = classValidatorResolver(SectionA);
 
 const SectionAForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IPerson>();
+  } = useForm<IPerson>({ resolver });
 
   const { formData } = useSunriseFormContext();
   const { updateFormData } = useSunriseFormContext();
@@ -36,15 +40,13 @@ const SectionAForm = () => {
                   className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                   type="text"
                   placeholder="fullname"
-                  {...register("fullName", {
-                    required: true,
-                    minLength: 3,
-                    maxLength: 50,
-                  })}
+                  {...register("fullName")}
                   defaultValue={formData.fullName}
                 />
                 {errors.fullName && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">
+                    {errors.fullName.message}
+                  </span>
                 )}
               </div>
             </div>
@@ -59,12 +61,10 @@ const SectionAForm = () => {
                   className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                   type="date"
                   defaultValue={`${formData.dob}`}
-                  {...register("dob", {
-                    required: true,
-                  })}
+                  {...register("dob")}
                 />
                 {errors.dob && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">{errors.dob.message}</span>
                 )}
               </div>
             </div>
@@ -86,14 +86,11 @@ const SectionAForm = () => {
                       type="text"
                       defaultValue={formData.citizenship.id}
                       placeholder="citizenship id"
-                      {...register("citizenship.id", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("citizenship.id")}
                     />
-                    {errors.citizenship?.id && (
+                    {errors.citizenship?.id?.message && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.citizenship.id.message}
                       </span>
                     )}
                   </div>
@@ -105,14 +102,11 @@ const SectionAForm = () => {
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.citizenship.issuedBy}
-                      {...register("citizenship.issuedBy", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("citizenship.issuedBy")}
                     />
                     {errors.citizenship?.issuedBy && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.citizenship.issuedBy.message}
                       </span>
                     )}
                   </div>
@@ -124,14 +118,11 @@ const SectionAForm = () => {
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="date"
                       defaultValue={`${formData.citizenship.issuedDate}`}
-                      {...register("citizenship.issuedDate", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("citizenship.issuedDate")}
                     />
                     {errors.citizenship?.issuedDate && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.citizenship.issuedDate.message}
                       </span>
                     )}
                   </div>
@@ -145,14 +136,11 @@ const SectionAForm = () => {
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.passport.id}
-                      {...register("passport.id", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("passport.id")}
                     />
                     {errors.passport?.id && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.passport.id.message}
                       </span>
                     )}
                   </div>
@@ -164,14 +152,11 @@ const SectionAForm = () => {
                       type="text"
                       defaultValue={formData.passport.issuedBy}
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
-                      {...register("passport.issuedBy", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("passport.issuedBy")}
                     />
                     {errors.passport?.issuedBy && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.passport.issuedBy.message}
                       </span>
                     )}
                   </div>
@@ -183,14 +168,11 @@ const SectionAForm = () => {
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="date"
                       defaultValue={`${formData.passport.issuedDate}`}
-                      {...register("passport.issuedDate", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("passport.issuedDate")}
                     />
                     {errors.passport?.issuedDate && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.passport.issuedDate.message}
                       </span>
                     )}
                   </div>
@@ -203,15 +185,12 @@ const SectionAForm = () => {
                     <input
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
-                      defaultValue={formData.otherDocument?.id}
-                      {...register("otherDocument.type", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      defaultValue={formData.otherDocument?.type}
+                      {...register("otherDocument.type")}
                     />
                     {errors.otherDocument?.type && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.otherDocument.type.message}
                       </span>
                     )}
                   </div>
@@ -222,15 +201,12 @@ const SectionAForm = () => {
                     <input
                       className=" inline-block border border-solid border-[#ccc] rounded w-[100%] h-fit"
                       type="text"
-                      defaultValue={formData.otherDocument?.type}
-                      {...register("otherDocument.id", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      defaultValue={formData.otherDocument?.id}
+                      {...register("otherDocument.id")}
                     />
                     {errors.otherDocument?.id && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.otherDocument.id.message}
                       </span>
                     )}
                   </div>
@@ -242,14 +218,11 @@ const SectionAForm = () => {
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.otherDocument?.issuingOffice}
-                      {...register("otherDocument.issuingOffice", {
-                        required: true,
-                        minLength: 1,
-                      })}
+                      {...register("otherDocument.issuingOffice")}
                     />
                     {errors.otherDocument?.issuingOffice && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.otherDocument.issuingOffice.message}{" "}
                       </span>
                     )}
                   </div>
@@ -271,14 +244,11 @@ const SectionAForm = () => {
                       className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.current.province}
-                      {...register("current.province", {
-                        required: true,
-                        minLength: 3,
-                      })}
+                      {...register("current.province")}
                     />
                     {errors.current?.province && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.current.province.message}
                       </span>
                     )}
                   </div>
@@ -290,14 +260,11 @@ const SectionAForm = () => {
                       className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.current.district}
-                      {...register("current.district", {
-                        required: true,
-                        minLength: 3,
-                      })}
+                      {...register("current.district")}
                     />
                     {errors.current?.district && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.current.district.message}
                       </span>
                     )}
                   </div>
@@ -309,14 +276,11 @@ const SectionAForm = () => {
                       className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.current.municipality}
-                      {...register("current.municipality", {
-                        required: true,
-                        minLength: 3,
-                      })}
+                      {...register("current.municipality")}
                     />
                     {errors.current?.municipality && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.current.municipality.message}{" "}
                       </span>
                     )}
                   </div>
@@ -330,26 +294,30 @@ const SectionAForm = () => {
                       className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.current.village}
-                      {...register("current.village", {
-                        required: true,
-                        minLength: 3,
-                      })}
+                      {...register("current.village")}
                     />
                     {errors.current?.village && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.current.village.message}{" "}
                       </span>
                     )}
                   </div>
                 </div>
                 <div className="flex w-1/4">
                   <label className="font-bold">House No:</label>
-                  <input
-                    className="h-fit mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
-                    type="text"
-                    defaultValue={formData.current.houseNo}
-                    {...register("current.houseNo")}
-                  />
+                  <div className="flex flex-col">
+                    <input
+                      className="h-fit mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
+                      type="text"
+                      defaultValue={formData.current.houseNo}
+                      {...register("current.houseNo")}
+                    />
+                    {errors.current?.houseNo && (
+                      <span className="text-red-500">
+                        {errors.current.houseNo.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex w-1/4">
                   <label className="font-bold">Ward NO:</label>
@@ -358,13 +326,11 @@ const SectionAForm = () => {
                       className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.current.wardNo}
-                      {...register("current.wardNo", {
-                        required: true,
-                      })}
+                      {...register("current.wardNo")}
                     />
                     {errors.current?.wardNo && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.current.wardNo.message}
                       </span>
                     )}
                   </div>
@@ -387,16 +353,11 @@ const SectionAForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="text"
                         defaultValue={formData.contact.phoneNo}
-                        {...register("contact.phoneNo", {
-                          required: true,
-                          minLength: 10,
-                          maxLength: 10,
-                          pattern: /(7|8|9)\d{9}/,
-                        })}
+                        {...register("contact.phoneNo")}
                       />
                       {errors.contact?.phoneNo && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.contact.phoneNo.message}
                         </span>
                       )}
                     </div>
@@ -404,12 +365,19 @@ const SectionAForm = () => {
                   <div className="flex w-1/4 justify-start items-center">
                     <label className="font-bold">Mobile No:</label>
                     <div className="flex flex-col mx-2 my-0">
-                      <input
-                        className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
-                        type="text"
-                        defaultValue={formData.contact.mobileNo}
-                        {...register("contact.mobileNo")}
-                      />
+                      <div className="flex flex-col">
+                        <input
+                          className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
+                          type="text"
+                          defaultValue={formData.contact.mobileNo}
+                          {...register("contact.mobileNo")}
+                        />
+                        {errors.contact?.mobileNo && (
+                          <span className="text-red-500">
+                            {errors.contact.mobileNo.message}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="flex w-1/4 justify-start items-center">
@@ -419,14 +387,11 @@ const SectionAForm = () => {
                         className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                         type="email"
                         defaultValue={formData.contact.email}
-                        {...register("contact.email", {
-                          required: true,
-                          pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                        })}
+                        {...register("contact.email")}
                       />
                       {errors.contact?.email && (
                         <span className="text-red-500">
-                          This field is required
+                          {errors.contact.email.message}{" "}
                         </span>
                       )}
                     </div>
@@ -449,14 +414,11 @@ const SectionAForm = () => {
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.fatherName}
-                      {...register("fatherName", {
-                        required: true,
-                        minLength: 3,
-                      })}
+                      {...register("fatherName")}
                     />
                     {errors.fatherName && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.fatherName.message}{" "}
                       </span>
                     )}
                   </div>
@@ -468,14 +430,11 @@ const SectionAForm = () => {
                       className="inline-block border border-solid border-[#ccc] rounded w-[100%]"
                       type="text"
                       defaultValue={formData.grandFatherName}
-                      {...register("grandFatherName", {
-                        required: true,
-                        minLength: 3,
-                      })}
+                      {...register("grandFatherName")}
                     />
                     {errors.grandFatherName && (
                       <span className="text-red-500">
-                        This field is required
+                        {errors.grandFatherName.message}{" "}
                       </span>
                     )}
                   </div>
@@ -489,6 +448,11 @@ const SectionAForm = () => {
                       defaultValue={formData.spouseName}
                       {...register("spouseName")}
                     />
+                    {errors.spouseName && (
+                      <span className="text-red-500">
+                        {errors.spouseName.message}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -503,20 +467,34 @@ const SectionAForm = () => {
               <div className="flex justify-between items-start gap-10">
                 <div className="flex w-1/4 justify-start items-center">
                   <label className="font-bold">Name and address:</label>
-                  <input
-                    className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
-                    type="text"
-                    defaultValue={formData.organizationName}
-                  />
+                  <div className="flex flex-col">
+                    <input
+                      className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
+                      type="text"
+                      defaultValue={formData.organizationName}
+                    />
+                    {errors.organizationName && (
+                      <span className="text-red-500">
+                        {errors.organizationName.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex w-1/4 justify-center items-center">
                   <label className="font-bold">Designation:</label>
-                  <input
-                    className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
-                    type="text"
-                    defaultValue={formData.designation}
-                    {...register("spouseName")}
-                  />
+                  <div className="flex flex-col">
+                    <input
+                      className="mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
+                      type="text"
+                      defaultValue={formData.designation}
+                      {...register("designation")}
+                    />
+                    {errors.designation && (
+                      <span className="text-red-500">
+                        {errors.designation.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex w-1/4 justify-center items-center">
                   <label className="font-bold">
@@ -524,12 +502,16 @@ const SectionAForm = () => {
                   </label>
                   <input
                     className="h-fit mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
-                    type="number"
+                    type="text"
                     defaultValue={formData.annualIncome}
-                    {...register("annualIncome", { required: true, min: 1 })}
+                    {...register("annualIncome", {
+                      valueAsNumber: true,
+                    })}
                   />
                   {errors.annualIncome && (
-                    <span className="text-red-500">This field is required</span>
+                    <span className="text-red-500">
+                      {errors.annualIncome.message}
+                    </span>
                   )}
                 </div>
               </div>
@@ -572,13 +554,10 @@ const SectionAForm = () => {
                   className="h-fit mx-2 my-0 inline-block border border-solid border-[#ccc] rounded w-[100%]"
                   type="text"
                   defaultValue={formData.acNo}
-                  {...register("acNo", {
-                    // required: true,
-                    minLength: 13,
-                  })}
+                  {...register("acNo")}
                 />
                 {errors.acNo && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">{errors.acNo.message}</span>
                 )}
               </div>
             </div>
